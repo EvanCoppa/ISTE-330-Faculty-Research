@@ -1,0 +1,59 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "PresentationHW2",
+            "request": "launch",
+            "mainClass": "PresentationHW2",
+            "projectName": "ISTE-330-Faculty-Research-_f3e07fa1"
+        },
+        {
+            "type": "java",
+            "name": "FacultyResearchApp",
+            "request": "launch",
+            "mainClass": "FacultyResearchApp",
+            "projectName": "ISTE-330-Faculty-Research-_f3e07fa1"
+        },
+        {
+            "type": "java",
+            "name": "LBE_JDBC_version2",
+            "request": "launch",
+            "mainClass": "LBE_JDBC_version2",
+            "projectName": "ISTE-330-Faculty-Research-_f3e07fa1"
+        },
+        {
+            "type": "java",
+            "name": "PresentationHW2",
+            "request": "launch",
+            "mainClass": "PresentationHW2",
+            "projectName": "hw02_957632aa"
+        },
+        {
+            "type": "java",
+            "name": "LBE_JDBC_version2",
+            "request": "launch",
+            "mainClass": "LBE_JDBC_version2",
+            "projectName": "hw02_957632aa"
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}",
+            "classPaths": [
+                "${workspaceFolder}/lib/mysql-connector-java-8.0.xx.jar"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "App",
+            "projectName": "hw02_957632aa"
+        }
+    ]
+}
