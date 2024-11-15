@@ -6,38 +6,10 @@
     "configurations": [
         {
             "type": "java",
-            "name": "PresentationHW2",
-            "request": "launch",
-            "mainClass": "PresentationHW2",
-            "projectName": "ISTE-330-Faculty-Research-_f3e07fa1"
-        },
-        {
-            "type": "java",
             "name": "FacultyResearchApp",
             "request": "launch",
             "mainClass": "FacultyResearchApp",
             "projectName": "ISTE-330-Faculty-Research-_f3e07fa1"
-        },
-        {
-            "type": "java",
-            "name": "LBE_JDBC_version2",
-            "request": "launch",
-            "mainClass": "LBE_JDBC_version2",
-            "projectName": "ISTE-330-Faculty-Research-_f3e07fa1"
-        },
-        {
-            "type": "java",
-            "name": "PresentationHW2",
-            "request": "launch",
-            "mainClass": "PresentationHW2",
-            "projectName": "hw02_957632aa"
-        },
-        {
-            "type": "java",
-            "name": "LBE_JDBC_version2",
-            "request": "launch",
-            "mainClass": "LBE_JDBC_version2",
-            "projectName": "hw02_957632aa"
         },
         {
             "type": "java",

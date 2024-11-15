@@ -1,7 +1,6 @@
 {
     "java.project.sourcePaths": [
         "src",
-        "coppa_hw02"
     ],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
