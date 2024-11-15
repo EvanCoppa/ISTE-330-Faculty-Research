@@ -4,10 +4,7 @@ import java.sql.SQLException;
 
 public class FacultyResearchApp {
 
-    public static void main(String[] args) {
-
-        System.out.println("Irwin Was Here!");
-       
+    public static void main(String[] args) {       
         FacultyResearchDatabase db = new FacultyResearchDatabase();
         if (db.connect()) {
             try {
