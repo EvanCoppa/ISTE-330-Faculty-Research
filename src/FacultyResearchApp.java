@@ -5,6 +5,9 @@ import java.sql.SQLException;
 public class FacultyResearchApp {
 
     public static void main(String[] args) {
+
+        System.out.println("Irwin Was Here!");
+       
         FacultyResearchDatabase db = new FacultyResearchDatabase();
         if (db.connect()) {
             try {
