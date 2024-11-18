@@ -9,6 +9,13 @@
             "name": "FacultyResearchApp",
             "request": "launch",
             "mainClass": "FacultyResearchApp",
+            "projectName": "ISTE-330-Faculty-Research_3dad9c9f"
+        },
+        {
+            "type": "java",
+            "name": "FacultyResearchApp",
+            "request": "launch",
+            "mainClass": "FacultyResearchApp",
             "projectName": "ISTE-330-Faculty-Research-_f3e07fa1"
         },
         {

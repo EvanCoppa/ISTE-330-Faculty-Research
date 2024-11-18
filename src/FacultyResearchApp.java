@@ -1,84 +1,94 @@
+// Irwin Lin 11/017/24
+
 import javax.swing.*;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class FacultyResearchApp {
 
-    public static void main(String[] args) {       
-        FacultyResearchDatabase db = new FacultyResearchDatabase();
-        if (db.connect()) {
-            try {
-                boolean exit = false;
-                while (!exit) {
-                    String[] options = {"Add Faculty", "Add Student", "Search Matches", "Exit"};
-                    int choice = JOptionPane.showOptionDialog(null, "Select an option:", "Main Menu",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+    public static void main(String[] args) {
+        String defaultPassword = "student"; 
+        String inputPassword = JOptionPane.showInputDialog("Enter the database password (Leave blank for default):");
+        String password = (inputPassword == null || inputPassword.trim().isEmpty()) ? defaultPassword : inputPassword;
 
+        FacultyResearchDatabase db = new FacultyResearchDatabase(password);
+
+        if (db.connect()) {
+            boolean exit = false;
+
+            while (!exit) {
+                String[] options = {"Add Faculty", "Add Student", "Find Matches", "Keyword Search", "Exit"};
+                int choice = JOptionPane.showOptionDialog(null, "Select an option", "Faculty Research App",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+                try {
                     switch (choice) {
-                        case 0 -> addFaculty(db);
-                        case 1 -> addStudent(db);
-                        case 2 -> searchMatches(db);
-                        case 3 -> exit = true;
-                        default -> exit = true;
+                        case 0:
+                            addFaculty(db);
+                            break;
+                        case 1: 
+                            addStudent(db);
+                            break;
+                        case 2: 
+                            findMatches(db);
+                            break;
+                        case 3: 
+                            keywordSearch(db);
+                            break;
+                        case 4: 
+                            exit = true;
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(null, "Invalid option. Please try again.");
                     }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "An error occurred: " + e.getMessage());
                 }
-            } finally {
-                db.close();
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Failed to connect to the database.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Failed to connect to the database. Exiting.");
         }
     }
+    
+    // Add faculty functionality
+    private static void addFaculty(FacultyResearchDatabase db) throws SQLException {
+        String name = JOptionPane.showInputDialog("Enter Faculty Name:");
+        String building = JOptionPane.showInputDialog("Enter Building:");
+        String office = JOptionPane.showInputDialog("Enter Office Number:");
+        String email = JOptionPane.showInputDialog("Enter Email:");
+        String abstractText = JOptionPane.showInputDialog("Enter Abstract:");
 
-    // Add Faculty
-    private static void addFaculty(FacultyResearchDatabase db) {
-        String firstName = JOptionPane.showInputDialog("Enter first name:");
-        String lastName = JOptionPane.showInputDialog("Enter last name:");
-        String building = JOptionPane.showInputDialog("Enter building number:");
-        String office = JOptionPane.showInputDialog("Enter office number:");
-        String email = JOptionPane.showInputDialog("Enter email:");
-        String interest = JOptionPane.showInputDialog("Enter interest:");
-
-        if (db.addFaculty(firstName, lastName, building, office, email, interest)) {
+        if (db.addFaculty(name, building, office, email, abstractText)) {
             JOptionPane.showMessageDialog(null, "Faculty added successfully!");
         } else {
-            JOptionPane.showMessageDialog(null, "Failed to add faculty.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Failed to add faculty.");
         }
     }
 
-    // Add Student
-    private static void addStudent(FacultyResearchDatabase db) {
-        String firstName = JOptionPane.showInputDialog("Enter first name:");
-        String lastName = JOptionPane.showInputDialog("Enter last name:");
-        String email = JOptionPane.showInputDialog("Enter email:");
-        String interest = JOptionPane.showInputDialog("Enter research topic:");
+    // Add student functionality
+    private static void addStudent(FacultyResearchDatabase db) throws SQLException {
+        String name = JOptionPane.showInputDialog("Enter Student Name:");
+        String email = JOptionPane.showInputDialog("Enter Email:");
+        String keywords = JOptionPane.showInputDialog("Enter Research Keywords (comma-separated):");
 
-        if (db.addStudent(firstName, lastName, email, interest)) {
+        String[] keywordArray = keywords.split(",");
+        if (db.addStudent(name, email, keywordArray)) {
             JOptionPane.showMessageDialog(null, "Student added successfully!");
         } else {
-            JOptionPane.showMessageDialog(null, "Failed to add student.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Failed to add student.");
         }
     }
 
-    // Search Matches
-    private static void searchMatches(FacultyResearchDatabase db) {
-        String keyword = JOptionPane.showInputDialog("Enter keyword to search:");
-        ResultSet rs = db.searchMatches(keyword);
+    // Find matches functionality
+    private static void findMatches(FacultyResearchDatabase db) throws SQLException {
+        String studentEmail = JOptionPane.showInputDialog("Enter Student Email:");
+        JOptionPane.showMessageDialog(null, "Matching faculty to student interests:");
+        db.findMatches(studentEmail);
+    }
 
-        if (rs != null) {
-            try {
-                StringBuilder results = new StringBuilder("Matches:\n");
-                while (rs.next()) {
-                    results.append(rs.getString("firstName")).append(" ")
-                           .append(rs.getString("lastName")).append(" (")
-                           .append(rs.getString("email")).append(")\n");
-                }
-                JOptionPane.showMessageDialog(null, results.toString());
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error processing search results: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "No matches found.");
-        }
+    // Keyword search functionality
+    private static void keywordSearch(FacultyResearchDatabase db) throws SQLException {
+        String keyword = JOptionPane.showInputDialog("Enter Keyword for Search:");
+        JOptionPane.showMessageDialog(null, "Search Results:");
+        db.searchByKeyword(keyword);
     }
 }
