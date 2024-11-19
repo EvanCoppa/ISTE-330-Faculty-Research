@@ -67,12 +67,18 @@ public class FacultyResearchApp {
 
     // Add student functionality
     private static void addStudent(FacultyResearchDatabase db) throws SQLException {
-        String name = JOptionPane.showInputDialog("Enter Student Name:");
+        // Collecting student details
+        String firstName = JOptionPane.showInputDialog("Enter Student First Name:");
+        String lastName = JOptionPane.showInputDialog("Enter Student Last Name:");
+        String phone = JOptionPane.showInputDialog("Enter Phone Number:");
         String email = JOptionPane.showInputDialog("Enter Email:");
         String keywords = JOptionPane.showInputDialog("Enter Research Keywords (comma-separated):");
-
+    
+        // Splitting keywords into an array
         String[] keywordArray = keywords.split(",");
-        if (db.addStudent(name, email, keywordArray)) {
+    
+        // Calling the database method to add the student
+        if (db.addStudent(firstName, lastName, phone, email, keywordArray)) {
             JOptionPane.showMessageDialog(null, "Student added successfully!");
         } else {
             JOptionPane.showMessageDialog(null, "Failed to add student.");
@@ -88,8 +94,19 @@ public class FacultyResearchApp {
 
     // Keyword search functionality
     private static void keywordSearch(FacultyResearchDatabase db) throws SQLException {
+        // Prompt the user for a keyword
         String keyword = JOptionPane.showInputDialog("Enter Keyword for Search:");
-        JOptionPane.showMessageDialog(null, "Search Results:");
-        db.searchByKeyword(keyword);
+    
+        // Retrieve results from the database
+        String[] results = db.searchByKeyword(keyword);
+    
+        // Format the results for display
+        StringBuilder message = new StringBuilder("Search Results:\n");
+        for (String result : results) {
+            message.append(result).append("\n");
+        }
+    
+        // Display the results in a JOptionPane
+        JOptionPane.showMessageDialog(null, message.toString());
     }
 }

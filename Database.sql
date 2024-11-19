@@ -1,15 +1,9 @@
--- Raika Kamalaraj, Renny Lin
--- 11/08/24
--- ISTE 330 
--- Faculty Research Database
-
--- Create and use the database
+-- Create the database and tables
 DROP DATABASE IF EXISTS faculty_research;
 CREATE DATABASE faculty_research;
 
 USE faculty_research;
 
--- Create the tables
 CREATE TABLE Account (
     accountID INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(55) UNIQUE NOT NULL,
@@ -24,8 +18,7 @@ CREATE TABLE Faculty (
     phoneNumber VARCHAR(15),
     buildingNumber VARCHAR(10),
     officeNumber VARCHAR(10),
-    email VARCHAR(55) UNIQUE NOT NULL,
-    CONSTRAINT faculty_email_fk FOREIGN KEY (email) REFERENCES Account(email) ON DELETE CASCADE
+    email VARCHAR(55) UNIQUE NOT NULL
 );
 
 CREATE TABLE Abstract (
@@ -36,9 +29,7 @@ CREATE TABLE Abstract (
 CREATE TABLE Faculty_Abstract (
     facultyID INT NOT NULL,
     abstractID INT NOT NULL,
-    PRIMARY KEY (facultyID, abstractID),
-    CONSTRAINT fa_facultyID_fk FOREIGN KEY (facultyID) REFERENCES Faculty(facultyID) ON DELETE CASCADE,
-    CONSTRAINT fa_abstractID_fk FOREIGN KEY (abstractID) REFERENCES Abstract(abstractID) ON DELETE CASCADE
+    PRIMARY KEY (facultyID, abstractID)
 );
 
 CREATE TABLE Interest (
@@ -50,9 +41,7 @@ CREATE TABLE Interest (
 CREATE TABLE Faculty_Interests (
     facultyID INT NOT NULL,
     interestID INT NOT NULL,
-    PRIMARY KEY (facultyID, interestID),
-    CONSTRAINT fi_facultyID_fk FOREIGN KEY (facultyID) REFERENCES Faculty(facultyID) ON DELETE CASCADE,
-    CONSTRAINT fi_interestID_fk FOREIGN KEY (interestID) REFERENCES Interest(interestID) ON DELETE CASCADE
+    PRIMARY KEY (facultyID, interestID)
 );
 
 CREATE TABLE Student (
@@ -61,16 +50,13 @@ CREATE TABLE Student (
     lastName VARCHAR(30) NOT NULL,
     phone VARCHAR(15),
     email VARCHAR(55) UNIQUE NOT NULL,
-    majorID INT,
-    CONSTRAINT student_email_fk FOREIGN KEY (email) REFERENCES Account(email) ON DELETE CASCADE
+    majorID INT
 );
 
 CREATE TABLE Student_Interest (
     studentID INT NOT NULL,
     interestID INT NOT NULL,
-    PRIMARY KEY (studentID, interestID),
-    CONSTRAINT si_studentID_fk FOREIGN KEY (studentID) REFERENCES Student(studentID) ON DELETE CASCADE,
-    CONSTRAINT si_interestID_fk FOREIGN KEY (interestID) REFERENCES Interest(interestID) ON DELETE CASCADE
+    PRIMARY KEY (studentID, interestID)
 );
 
 CREATE TABLE Public_Users (
@@ -78,8 +64,7 @@ CREATE TABLE Public_Users (
     firstName VARCHAR(30) NOT NULL,
     lastName VARCHAR(30) NOT NULL,
     phone VARCHAR(15),
-    email VARCHAR(55) UNIQUE NOT NULL,
-    CONSTRAINT pu_email_fk FOREIGN KEY (email) REFERENCES Account(email) ON DELETE CASCADE
+    email VARCHAR(55) UNIQUE NOT NULL
 );
 
 -- Insert example data into Account table
@@ -123,14 +108,3 @@ INSERT INTO Student_Interest (studentID, interestID) VALUES
 -- Insert example data into Public_Users table
 INSERT INTO Public_Users (firstName, lastName, phone, email) VALUES
 ('Michael', 'Jones', '5557654321', 'mjones@public.com');
-
--- Example queries to verify the data
-SELECT * FROM Account;
-SELECT * FROM Faculty;
-SELECT * FROM Abstract;
-SELECT * FROM Faculty_Abstract;
-SELECT * FROM Interest;
-SELECT * FROM Faculty_Interests;
-SELECT * FROM Student;
-SELECT * FROM Student_Interest;
-SELECT * FROM Public_Users;
