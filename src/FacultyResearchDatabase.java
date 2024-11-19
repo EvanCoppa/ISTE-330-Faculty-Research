@@ -25,14 +25,16 @@ public class FacultyResearchDatabase {
     }
 
     // Add faculty with abstract
-    public boolean addFaculty(String name, String building, String office, String email, String abstractText) {
-        String sql = "INSERT INTO Faculty (name, building, office, email, abstract) VALUES (?, ?, ?, ?, ?)";
+    public boolean addFaculty(String firstName, String lastName, String buildingNumber, String officeNumber, String email, String phoneNumber) {
+        String sql = "INSERT INTO Faculty (firstName, lastName, buildingNumber, officeNumber, email, phoneNumber) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, name);
-            stmt.setString(2, building);
-            stmt.setString(3, office);
-            stmt.setString(4, email);
-            stmt.setString(5, abstractText);
+            stmt.setString(1, firstName);
+            stmt.setString(2, lastName);
+            stmt.setString(3, buildingNumber);
+            stmt.setString(4, officeNumber);
+            stmt.setString(5, email);
+            stmt.setString(6, phoneNumber);
+
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {

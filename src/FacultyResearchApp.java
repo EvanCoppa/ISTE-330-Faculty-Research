@@ -1,7 +1,7 @@
 // Irwin Lin 11/017/24
 
-import javax.swing.*;
 import java.sql.SQLException;
+import javax.swing.*;
 
 public class FacultyResearchApp {
 
@@ -51,13 +51,14 @@ public class FacultyResearchApp {
     
     // Add faculty functionality
     private static void addFaculty(FacultyResearchDatabase db) throws SQLException {
-        String name = JOptionPane.showInputDialog("Enter Faculty Name:");
+        String firstName = JOptionPane.showInputDialog("Enter Faculty First Name:");
+        String lastName = JOptionPane.showInputDialog("Enter Faculty Last Name:");
         String building = JOptionPane.showInputDialog("Enter Building:");
         String office = JOptionPane.showInputDialog("Enter Office Number:");
         String email = JOptionPane.showInputDialog("Enter Email:");
-        String abstractText = JOptionPane.showInputDialog("Enter Abstract:");
+        String phoneNumber = JOptionPane.showInputDialog("Enter Phone Number:");
 
-        if (db.addFaculty(name, building, office, email, abstractText)) {
+        if (db.addFaculty(firstName, lastName, building, office, email, phoneNumber)) {
             JOptionPane.showMessageDialog(null, "Faculty added successfully!");
         } else {
             JOptionPane.showMessageDialog(null, "Failed to add faculty.");
