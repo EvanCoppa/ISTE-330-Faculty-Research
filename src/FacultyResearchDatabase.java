@@ -27,18 +27,53 @@ public class FacultyResearchDatabase {
     }
 
     // Add faculty with abstract
-    public boolean addFaculty(String firstName, String lastName, String buildingNumber, String officeNumber, String email, String phoneNumber) {
-        String sql = "INSERT INTO Faculty (firstName, lastName, buildingNumber, officeNumber, email, phoneNumber) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, firstName);
-            stmt.setString(2, lastName);
-            stmt.setString(3, buildingNumber);
-            stmt.setString(4, officeNumber);
-            stmt.setString(5, email);
-            stmt.setString(6, phoneNumber);
-
-            stmt.executeUpdate();
+    public boolean addFaculty(String firstName, String lastName, String buildingNumber, String officeNumber, String email, String phoneNumber, String[] keywords) {
+        String facultySql = "INSERT INTO Faculty (firstName, lastName, buildingNumber, officeNumber, email, phoneNumber) VALUES (?, ?, ?, ?, ?, ?)";
+        String interestSql = "INSERT INTO Interest (name) VALUES (?) ON DUPLICATE KEY UPDATE interestID=LAST_INSERT_ID(interestID)";
+        String facultyInterestSql = "INSERT INTO Faculty_Interests (facultyID, interestID) VALUES (?, ?)";
+    
+        try (PreparedStatement facultyStmt = conn.prepareStatement(facultySql, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement interestStmt = conn.prepareStatement(interestSql, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement facultyInterestStmt = conn.prepareStatement(facultyInterestSql)) {
+    
+            // Insert faculty into Faculty table
+            facultyStmt.setString(1, firstName);
+            facultyStmt.setString(2, lastName);
+            facultyStmt.setString(3, buildingNumber);
+            facultyStmt.setString(4, officeNumber);
+            facultyStmt.setString(5, email);
+            facultyStmt.setString(6, phoneNumber);
+            facultyStmt.executeUpdate();
+    
+            // Retrieve the generated facultyID
+            ResultSet facultyKeys = facultyStmt.getGeneratedKeys();
+            if (!facultyKeys.next()) {
+                throw new SQLException("Failed to retrieve facultyID.");
+            }
+            int facultyID = facultyKeys.getInt(1);
+    
+            // Add keywords and link to the faculty
+            for (String keyword : keywords) {
+                keyword = keyword.trim(); // Clean up extra spaces
+    
+                // Insert keyword into Interest table
+                interestStmt.setString(1, keyword);
+                interestStmt.executeUpdate();
+    
+                // Retrieve the generated or existing interestID
+                ResultSet interestKeys = interestStmt.getGeneratedKeys();
+                if (!interestKeys.next()) {
+                    throw new SQLException("Failed to retrieve interestID for keyword: " + keyword);
+                }
+                int interestID = interestKeys.getInt(1);
+    
+                // Link facultyID and interestID in Faculty_Interests table
+                facultyInterestStmt.setInt(1, facultyID);
+                facultyInterestStmt.setInt(2, interestID);
+                facultyInterestStmt.executeUpdate();
+            }
             return true;
+    
         } catch (SQLException e) {
             System.out.println("Error adding faculty: " + e.getMessage());
             return false;
@@ -98,24 +133,43 @@ public class FacultyResearchDatabase {
     }
 
     // Match student interests with faculty abstracts
-    public void findMatches(String studentEmail) {
-        String sql = "SELECT Faculty.name, Faculty.building, Faculty.office, Faculty.email "
-                   + "FROM Faculty "
-                   + "INNER JOIN Interest "
-                   + "ON Faculty.abstract LIKE CONCAT('%', Interest.keyword, '%') "
-                   + "WHERE Interest.student_email = ?";
+    public String[] findMatches(String studentEmail) {
+        String sql = """
+            SELECT Faculty.firstName, Faculty.lastName, Faculty.buildingNumber, Faculty.officeNumber, Faculty.email
+            FROM Faculty
+            JOIN Faculty_Interests ON Faculty.facultyID = Faculty_Interests.facultyID
+            JOIN Interest ON Faculty_Interests.interestID = Interest.interestID
+            JOIN Student_Interest ON Interest.interestID = Student_Interest.interestID
+            JOIN Student ON Student.studentID = Student_Interest.studentID
+            WHERE Student.email = ?
+        """;
+    
+        List<String> results = new ArrayList<>();
+    
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, studentEmail);
             ResultSet rs = stmt.executeQuery();
+    
             while (rs.next()) {
-                System.out.println("Matched Faculty: " + rs.getString("name") +
-                                   " | Building: " + rs.getString("building") +
-                                   " | Office: " + rs.getString("office") +
-                                   " | Email: " + rs.getString("email"));
+                String facultyName = rs.getString("firstName") + " " + rs.getString("lastName");
+                String building = rs.getString("buildingNumber");
+                String office = rs.getString("officeNumber");
+                String email = rs.getString("email");
+    
+                results.add("Matched Faculty: " + facultyName +
+                            " | Building: " + building +
+                            " | Office: " + office +
+                            " | Email: " + email);
             }
         } catch (SQLException e) {
             System.out.println("Error finding matches: " + e.getMessage());
         }
+    
+        if (results.isEmpty()) {
+            results.add("No matches found for student email: " + studentEmail);
+        }
+    
+        return results.toArray(new String[0]);
     }
 
     // Search for faculty or students based on a keyword (External user functionality)

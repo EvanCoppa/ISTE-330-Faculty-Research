@@ -57,8 +57,13 @@ public class FacultyResearchApp {
         String office = JOptionPane.showInputDialog("Enter Office Number:");
         String email = JOptionPane.showInputDialog("Enter Email:");
         String phoneNumber = JOptionPane.showInputDialog("Enter Phone Number:");
-
-        if (db.addFaculty(firstName, lastName, building, office, email, phoneNumber)) {
+        String keywords = JOptionPane.showInputDialog("Enter Research Keywords (comma-separated):");
+    
+        // Split the keywords into an array
+        String[] keywordArray = keywords.split(",");
+    
+        // Pass all inputs to the database method
+        if (db.addFaculty(firstName, lastName, building, office, email, phoneNumber, keywordArray)) {
             JOptionPane.showMessageDialog(null, "Faculty added successfully!");
         } else {
             JOptionPane.showMessageDialog(null, "Failed to add faculty.");
@@ -87,9 +92,20 @@ public class FacultyResearchApp {
 
     // Find matches functionality
     private static void findMatches(FacultyResearchDatabase db) throws SQLException {
+        // Prompt the user for student email
         String studentEmail = JOptionPane.showInputDialog("Enter Student Email:");
-        JOptionPane.showMessageDialog(null, "Matching faculty to student interests:");
-        db.findMatches(studentEmail);
+    
+        // Retrieve matching faculty as an array
+        String[] matches = db.findMatches(studentEmail);
+    
+        // Format the results for display
+        StringBuilder message = new StringBuilder("Matching Faculty to Student Interests:\n");
+        for (String match : matches) {
+            message.append(match).append("\n");
+        }
+    
+        // Display the results in a JOptionPane
+        JOptionPane.showMessageDialog(null, message.toString());
     }
 
     // Keyword search functionality

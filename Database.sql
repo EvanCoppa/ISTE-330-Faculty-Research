@@ -34,7 +34,7 @@ CREATE TABLE Faculty_Abstract (
 
 CREATE TABLE Interest (
     interestID INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(55) NOT NULL,
+    name VARCHAR(55) UNIQUE NOT NULL,
     interestDescription MEDIUMTEXT
 );
 
